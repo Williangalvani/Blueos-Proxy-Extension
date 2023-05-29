@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>URL Loader</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden; /* Prevent scrollbars */
+    }
+
+    #address-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #f2f2f2;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    #address-bar input {
+      width: 80%;
+      height: 30px;
+      padding: 4px;
+      font-size: 16px;
+    }
+
+    #load-button {
+      width: 80px;
+      height: 38px;
+      margin-left: 10px;
+      font-size: 16px;
+    }
+
+    #resultFrame {
+      position: absolute;
+      top: 50px;
+      left: 0;
+      width: 100%;
+      height: calc(100% - 50px);
+      border: none;
+    }
+
+    #errorMessage {
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="address-bar">
+    <input type="text" id="urlInput" placeholder="Enter a URL">
+    <button id="load-button" onclick="loadURL()">Load</button>
+  </div>
+
+  <iframe id="resultFrame"></iframe>
+
+  <div id="errorMessage"></div>
+
+  <script>
+    function loadURL() {
+      var urlInput = document.getElementById('urlInput');
+      var resultFrame = document.getElementById('resultFrame');
+      var errorMessage = document.getElementById('errorMessage');
+
+      // Reset error message
+      errorMessage.textContent = '';
+
+      // Get the URL from the input
+      var url = urlInput.value.trim();
+
+      // Check if the URL is not empty
+      if (url !== '') {
+        // Construct the URL for the proxy endpoint
+        var proxyUrl = '/proxy/' + encodeURIComponent(url);
+
+        // Set the iframe source to the proxy URL
+        resultFrame.src = proxyUrl;
+      } else {
+        // Display an error message if the URL is empty
+        errorMessage.textContent = 'Please enter a URL';
+      }
+    }
+  </script>
+</body>
+</html>
