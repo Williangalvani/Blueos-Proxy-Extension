@@ -1,0 +1,9 @@
+{
+  "name":"HTTPProxy",
+  "description":"Proxy for accessing http resources as if from the ROV",
+  "icon":"mdi-clock-fast",
+  "company":"Blue Robotics",
+  "version":"0.0.1",
+  "webpage":"",
+  "api":""
+}

@@ -15,8 +15,7 @@ const server = http.createServer((req, res) => {
 
   // Check if the client's IP address is localhost
   if (req.connection.remoteAddress === '::1' || req.connection.remoteAddress === '127.0.0.1') {
-    res.writeHead(403, { 'Content-Type': 'text/plain' });
-    res.end('Connection from localhost is not allowed');
+    res.end();
     return;
   }
 
@@ -133,6 +132,9 @@ function serveFile(res, filePath) {
       break;
     case '.gif':
       contentType = 'image/gif';
+      break;
+    case '.json':
+      contentType = 'application/json';
       break;
   }
 
