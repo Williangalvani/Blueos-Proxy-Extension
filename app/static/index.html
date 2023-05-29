@@ -50,11 +50,11 @@
 </head>
 <body>
   <div id="address-bar">
-    <input type="text" id="urlInput" placeholder="Enter a URL">
+    <input type="text" id="urlInput" placeholder="Enter a URL starting with http:// or https://">
     <button id="load-button" onclick="loadURL()">Load</button>
   </div>
 
-  <iframe id="resultFrame"></iframe>
+  <iframe id="resultFrame" onload="checkLoadStatus()"></iframe>
 
   <div id="errorMessage"></div>
 
@@ -72,6 +72,11 @@
 
       // Check if the URL is not empty
       if (url !== '') {
+        // Add http:// to the URL if it doesn't start with http:// or https://
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+          url = 'http://' + url;
+        }
+
         // Construct the URL for the proxy endpoint
         var proxyUrl = '/proxy/' + encodeURIComponent(url);
 
@@ -80,6 +85,20 @@
       } else {
         // Display an error message if the URL is empty
         errorMessage.textContent = 'Please enter a URL';
+      }
+    }
+
+    function checkLoadStatus() {
+      var resultFrame = document.getElementById('resultFrame');
+      var errorMessage = document.getElementById('errorMessage');
+
+      try {
+        var doc = resultFrame.contentDocument || resultFrame.contentWindow.document;
+        if (doc.location.href === 'about:blank') {
+          errorMessage.textContent = 'Failed to load URL. Please check the URL and try again.';
+        }
+      } catch (e) {
+        // Ignore cross-origin errors
       }
     }
   </script>
