@@ -1,54 +1,55 @@
 <html>
 
 <head>
-    <title>Vue + Vuetify + backend Example Extension</title>
-    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
-    <link href="/css/materialdesignicons.min.css" rel="stylesheet">
-    <link href="/css/vuetify.min.css" rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <title>Vue + Vuetify + backend Example Extension</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link href="/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="/css/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 </head>
 
 <style>
-    .v-card {
-        padding: 20px;
-    }
+  .v-card {
+    padding: 20px;
+  }
 
-    h1 {
-        margin-bottom: 30px;
-        text-align: center;
-    }
+  h1 {
+    margin-bottom: 30px;
+    text-align: center;
+  }
 </style>
 
 <div id="app">
   <v-app>
-      <v-main>
-          <v-container>
-              <v-row>
-                  <v-card>
-                      <v-card-title>
-                          Servers
-                      </v-card-title>
-                      <v-card-text>
-                          <v-list v-for="(item, index) in items" :key="index">
-                              <v-list-item>
-                                  <v-text-field v-model="item.name" label="Name"></v-text-field>
-                                  <v-text-field v-model="item.url" label="URL"></v-text-field>
-                                  <v-btn href="potato"> Open </v-btn>
-                                  <v-checkbox v-model="item.sidebar" label="Show in sidebar"></v-checkbox>
-                              </v-list-item>
-                          </v-list>
-                      </v-card-text>
-                      <v-card-actions>
-                        <v-btn outlined rounded text @click="addItem()">
-                            Add
-                        </v-btn>
-                        <v-btn outlined rounded text @click="saveItemsToBackend()">
-                            Save
-                        </v-btn>
-                  </v-card>
-              </v-row>
-          </v-container>
-      </v-main>
+    <v-main>
+      <v-container>
+        <v-row>
+          <v-card>
+            <v-card-title>
+              Servers
+            </v-card-title>
+            <v-card-text>
+              <v-list v-for="(item, index) in items" :key="index">
+                <v-list-item>
+                  <v-text-field v-model="item.name" label="Name"></v-text-field>
+                  <v-text-field @blur="validateUrls()" v-model="item.url" label="URL"></v-text-field>
+                  <v-checkbox v-model="item.sidebar" label="Show in sidebar (currently broken)"></v-checkbox>
+                  <v-btn :disabled="!item.saved" color="primary" :href="'http://' + hostname + ':' + (11000 + index)"
+                    target="_blank"> Open </v-btn>
+                </v-list-item>
+              </v-list>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn outlined rounded text @click="addItem()">
+                Add
+              </v-btn>
+              <v-btn color="primary" @click="saveItemsToBackend()">
+                Save
+              </v-btn>
+          </v-card>
+        </v-row>
+      </v-container>
+    </v-main>
   </v-app>
 </div>
 
@@ -59,32 +60,60 @@
 <script>
   Vue.config.devtools = true;
   new Vue({
-      el: '#app',
-      vuetify: new Vuetify(),
-      data() {
-          return {
-              items: [],
-          }
-      },
-      methods: {
-        addItem() {
-            this.items.push({ name: '', url: '', sidebar: false });
-        },
-          async loadItemsFromBackend() {
-              axios.get("/v1.0/load").then(response => {
-                  // use vue.set to make sure the data is reactive
-                  this.$set(this, 'items', response.data);
-              })
-          },
-          async saveItemsToBackend() {
-              axios.post('/v1.0/save', {
-                  data: this.items,
-              })
-          }
-      },
-      mounted() {
-          this.loadItemsFromBackend()
+    el: '#app',
+    vuetify: new Vuetify(),
+    data() {
+      return {
+        items: [],
       }
+    },
+    methods: {
+      addItem() {
+        this.items.push({ name: '', url: '', sidebar: false });
+      },
+      validateUrls() {
+        for (let item of this.items) {
+          if (!item.url.startsWith('http://') && !item.url.startsWith('https://') && item.url.length > 0) {
+            this.$set(item, 'url', 'http://' + item.url);
+          }
+        }
+      },
+
+      async loadItemsFromBackend() {
+        axios.get("/v1.0/load").then(response => {
+          // use vue.set to make sure the data is reactive
+          if (!response.data.data)
+            this.$set(this, 'items', []);
+          else {
+            // use vue.set to make sure the data is reactive
+            // (otherwise the data will not be updated in the view
+            const items = response.data.data.map(item => {
+              item.saved = true;
+              return item;
+            });
+            this.$set(this, 'items', items);
+          }
+        })
+      },
+      async saveItemsToBackend() {
+        axios.post('/v1.0/save',
+          { data: this.validItems },
+        )
+        await this.loadItemsFromBackend()
+      }
+    },
+    computed: {
+      hostname() {
+        return (typeof window !== 'undefined' && window.location) ? window.location.hostname : 'localhost';
+      },
+      validItems() {
+        return this.items.filter(item => item.name && item.url);
+      }
+    },
+    mounted() {
+      this.loadItemsFromBackend()
+    }
   })
 </script>
+
 </html>

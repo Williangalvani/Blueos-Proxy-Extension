@@ -16,11 +16,11 @@ setup(
     license="MIT",
     install_requires=[
         "appdirs == 1.4.4",
-        "fastapi == 0.63.0",
-        "fastapi-versioning == 0.9.1",
+        "fastapi == 0.109.0",
+        "fastapi-versioning == 0.10.0",
         "loguru == 0.5.3",
-        "uvicorn == 0.13.4",
-        "starlette==0.13.6",
+        "uvicorn == 0.25.0",
+        "starlette==0.35.1",
         "aiofiles==0.8.0",
     ],
 )

@@ -32,7 +32,7 @@ class ItemList(BaseModel):
     data: List[Item]
 
 class NginxManager:
-  base_port = 9000
+  base_port = 11000
   def __init__(self):
     self.process = None
 
@@ -49,35 +49,38 @@ class NginxManager:
           location / {{
             proxy_pass {server.url};
           }}
-        }}
         """)
+        print(server.sidebar)
         if server.sidebar:
           register_service = f"""
-          {{
-              "name":"{server.name}",
-              "description":"Example Extension",
-              "icon":"mdi-clock-fast",
-              "company":"Blue Robotics",
-              "version":"1.0.0",
-              "webpage":"https://example.com",
-              "api":""
-          }}
-          """
+{{  "name":"{server.name}",
+    "description":"Example Extension",
+    "icon":"mdi-clock-fast",
+    "company":"Blue Robotics",
+    "version":"1.0.0",
+    "webpage":"https://example.com",
+    "api":""
+}}
+"""
           f.write(f"""
           location /register_service {{
-            return 200 {register_service};
+            return 200 '{register_service}';
+          }}
           }}
           """)
+        else :
+          f.write("}")
       f.write("}")
 
     if self.process is None:
-      self.process = subprocess.Popen(["nginx", "-c", config_file])
+      self.process = subprocess.Popen(["/usr/local/nginx/sbin/nginx", "-c", config_file])
 
   def stop(self):
+    logger.info("Stopping Nginx server...")
     if self.process is not None:
-      self.process.terminate()
+      self.process.send_signal(signal.SIGQUIT)
+      subprocess.run(["/usr/local/nginx/sbin/nginx", "-s", "stop"])
       self.process.wait()
-      time.sleep(2)
       self.process = None
 
 
@@ -104,20 +107,17 @@ app = FastAPI(
 
 servers = []
 
-# We always use the same file, for simplicity
-user_config_dir = Path(appdirs.user_config_dir())
-text_file = user_config_dir / "file.txt"
+text_file = Path("/usr/blueos/userdata/blueos-proxy/file.txt")
 
 if text_file.exists():
-  try:
     with open(text_file, "r") as f:
-      data = f.read()
-      servers = ItemList.parse_raw(data).data
-  except json.decoder.JSONDecodeError:
-    logger.warning(f"File {text_file} is not a valid JSON file!")
-    # delete file
-    text_file.unlink()
-print(servers)
+        data = f.read()
+        try:
+            servers = ItemList.model_validate_json(data).data
+        except json.decoder.JSONDecodeError:
+            logger.warning(f"File {text_file} is not a valid JSON file!")
+            # delete file
+            text_file.unlink()
 nginx.start(servers)
 
 logger.info(f"Starting {SERVICE_NAME}!")
@@ -126,12 +126,12 @@ logger.info(f"Text file in use: {text_file}")
 @app.post("/save", status_code=status.HTTP_200_OK)
 @version(1, 0)
 async def save_data(data: ItemList) -> Any:
-    nginx.stop()
-    print(data.data)
-    nginx.start(data.data)
-    with open(text_file, "w") as f:
-        servers = [json.loads(item.model_dump_json()) for item in data.data]
-        f.write(json.dumps(servers))
+  logger.info("Saving data...")
+  nginx.stop()
+  print(data.data)
+  nginx.start(data.data)
+  with open(text_file, "w") as f:
+    f.write(data.model_dump_json())
 
 @app.get("/load", status_code=status.HTTP_200_OK)
 @version(1, 0)
@@ -157,4 +157,6 @@ async def root() -> Any:
 
 if __name__ == "__main__":
     # Running uvicorn with log disabled so loguru can handle it
-    uvicorn.run(app, host="0.0.0.0", port=80, log_config=None)
+    logger.info(f"starting")
+
+    uvicorn.run(app, host="0.0.0.0", port=10999, log_config=None)
