@@ -27,9 +27,9 @@ const server = http.createServer((req, res) => {
     // Serve index.html from the static folder
     const filePath = path.join(STATIC_FOLDER, 'index.html');
     serveFile(res, filePath);
-  } else if (endpoint.startsWith('/static/')) {
+  } else if (endpoint.startsWith('/__static/')) {
     // Serve static files from the static folder
-    const fileName = decodeURIComponent(endpoint.slice('/static/'.length));
+    const fileName = decodeURIComponent(endpoint.slice('/__static/'.length));
     const filePath = path.join(STATIC_FOLDER, fileName);
     serveFile(res, filePath);
   } else if (endpoint === '/register_service') {
