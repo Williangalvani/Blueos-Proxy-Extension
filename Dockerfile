@@ -33,10 +33,10 @@ LABEL company='{\
         "email": "support@bluerobotics.com"\
     }'
 LABEL type="example"
-LABEL readme='https://raw.githubusercontent.com/Williangalvani/BlueOS-examples/{tag}/example4-vue-backend/Readme.md'
+LABEL readme='https://raw.githubusercontent.com/Williangalvani/Blueos-Proxy-Extension/{tag}/Readme.md'
 LABEL links='{\
-        "website": "https://github.com/Williangalvani/BlueOS-examples/",\
-        "support": "https://github.com/Williangalvani/BlueOS-examples/"\
+        "website": "https://github.com/Williangalvani/Blueos-Proxy-Extension",\
+        "support": "https://github.com/Williangalvani/Blueos-Proxy-Extension"\
     }'
 LABEL requirements="core >= 1.1"
 
