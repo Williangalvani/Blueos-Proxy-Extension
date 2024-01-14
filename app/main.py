@@ -73,13 +73,13 @@ class NginxManager:
       f.write("}")
 
     if self.process is None:
-      self.process = subprocess.Popen(["/usr/local/nginx/sbin/nginx", "-c", config_file])
+      self.process = subprocess.Popen(["nginx", "-c", config_file])
 
   def stop(self):
     logger.info("Stopping Nginx server...")
     if self.process is not None:
       self.process.send_signal(signal.SIGQUIT)
-      subprocess.run(["/usr/local/nginx/sbin/nginx", "-s", "stop"])
+      subprocess.run(["nginx", "-s", "stop"])
       self.process.wait()
       self.process = None
 
