@@ -9,7 +9,6 @@ COPY app/setup.py /app/setup.py
 RUN python /app/setup.py install
 COPY app /app
 RUN mkdir -p /usr/blueos/userdata/blueos-proxy/
-EXPOSE 80/tcp
 
 LABEL version="1.0.0"
 # TODO: Add a Volume for persistence across boots
