@@ -11,7 +11,7 @@ COPY app /app
 RUN mkdir -p /usr/blueos/userdata/blueos-proxy/
 EXPOSE 80/tcp
 
-LABEL version="1.0.1"
+LABEL version="1.0.0"
 # TODO: Add a Volume for persistence across boots
 LABEL permissions='\
 {\
