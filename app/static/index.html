@@ -31,11 +31,12 @@
             <v-card-text>
               <v-list v-for="(item, index) in items" :key="index">
                 <v-list-item>
+                  <v-btn :disabled="!item.saved" color="primary" :href="'http://' + hostname + ':' + (11000 + index)"
+                    target="_blank"> Open </v-btn>
                   <v-text-field v-model="item.name" label="Name"></v-text-field>
                   <v-text-field @blur="validateUrls()" v-model="item.url" label="URL"></v-text-field>
                   <v-checkbox v-model="item.sidebar" label="Show in sidebar (currently broken)"></v-checkbox>
-                  <v-btn :disabled="!item.saved" color="primary" :href="'http://' + hostname + ':' + (11000 + index)"
-                    target="_blank"> Open </v-btn>
+                  <v-btn color="red" @click="removeItem(index)">Remove</v-btn>
                 </v-list-item>
               </v-list>
             </v-card-text>
@@ -68,6 +69,10 @@
       }
     },
     methods: {
+      async removeItem(index) {
+        this.items.splice(index, 1);
+        await this.saveItemsToBackend()
+      },
       addItem() {
         this.items.push({ name: '', url: '', sidebar: false });
       },
