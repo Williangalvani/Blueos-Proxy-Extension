@@ -1,4 +1,4 @@
-from python:3.9-slim-bullseye
+from python:3.11-slim-bullseye
 
 # Install dependencies for building Nginx
 RUN apt-get update && apt-get install -y \
