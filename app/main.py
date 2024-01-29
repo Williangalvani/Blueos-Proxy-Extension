@@ -51,6 +51,9 @@ class NginxManager:
               proxy_http_version 1.1;
               proxy_set_header Upgrade $http_upgrade;
               proxy_set_header Connection "upgrade";
+              proxy_set_header Cache-Control "no-store, no-cache, must-revalidate, max-age=0";
+              proxy_set_header Pragma "no-cache";
+              proxy_set_header Expires "0";
           }}
         """)
         print(server.sidebar)
