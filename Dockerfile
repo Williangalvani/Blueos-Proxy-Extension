@@ -10,7 +10,7 @@ RUN python /app/setup.py install
 COPY app /app
 RUN mkdir -p /usr/blueos/userdata/blueos-proxy/
 
-LABEL version="1.0.0"
+LABEL version="1.0.1"
 # TODO: Add a Volume for persistence across boots
 LABEL permissions='\
 {\
