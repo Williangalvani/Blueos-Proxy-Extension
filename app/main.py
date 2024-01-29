@@ -63,7 +63,7 @@ class NginxManager:
     "description":"Example Extension",
     "icon":"mdi-clock-fast",
     "company":"Blue Robotics",
-    "version":"1.0.0",
+    "version":"1.0.2",
     "webpage":"https://example.com",
     "api":""
 }}
