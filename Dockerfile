@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 COPY app/setup.py /app/setup.py
-RUN python /app/setup.py install
+RUN cd app && pip install .
 COPY app /app
 RUN mkdir -p /usr/blueos/userdata/blueos-proxy/
 
