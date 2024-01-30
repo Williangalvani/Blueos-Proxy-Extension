@@ -64,6 +64,7 @@ class NginxManager:
     "icon":"mdi-clock-fast",
     "company":"Blue Robotics",
     "version":"1.0.2",
+    "avoid_iframes":true,
     "webpage":"https://example.com",
     "api":""
 }}
