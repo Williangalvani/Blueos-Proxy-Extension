@@ -26,26 +26,32 @@
         <v-row>
           <v-card>
             <v-card-title>
-              Servers
+              BluOS Proxying Extension
             </v-card-title>
             <v-card-text>
-              <v-list v-for="(item, index) in items" :key="index">
-                <v-list-item>
-                  <v-btn :disabled="!item.saved" color="primary" :href="'http://' + hostname + ':' + (11000 + index)"
-                    target="_blank"> Open </v-btn>
-                  <v-text-field v-model="item.name" label="Name"></v-text-field>
-                  <v-text-field @blur="validateUrls()" v-model="item.url" label="URL"></v-text-field>
-                  <v-checkbox v-model="item.sidebar" label="Show in sidebar (currently broken)"></v-checkbox>
-                  <v-btn color="red" @click="removeItem(index)">Remove</v-btn>
-                </v-list-item>
-              </v-list>
+              This extension allows you to use your BlueOS device as a proxy. this is useful if you need to access a UI on a network that is not accessible from your device, but is from the BlueOS.
+              Click "Add" to add a new item, and "Save" to save the items.
+              <v-card v-if="items.length" class="d-flex flex-row">
+                <v-list v-for="(item, index) in items" :key="index">
+                  <v-list-item>
+                    <v-card style="min-width: 300px;">
+                      <v-btn :disabled="!item.saved" color="primary" :href="'http://' + hostname + ':' + (11000 + index)"
+                        target="_blank"> Open </v-btn>
+                      <v-text-field v-model="item.name" label="Name"></v-text-field>
+                      <v-text-field @blur="validateUrls()" v-model="item.url" label="URL"></v-text-field>
+                      <v-checkbox v-model="item.sidebar" label="Show in sidebar"></v-checkbox>
+                      <v-btn color="red" @click="removeItem(index)">Remove</v-btn>
+                      <v-btn :disabled="validItems.length < items.length" color="primary" @click="saveItemsToBackend()">
+                        Save
+                      </v-btn>
+                    </v-card>
+                  </v-list-item>
+                </v-list>
+              </v-card>
             </v-card-text>
             <v-card-actions>
-              <v-btn outlined rounded text @click="addItem()">
-                Add
-              </v-btn>
-              <v-btn color="primary" @click="saveItemsToBackend()">
-                Save
+              <v-btn color="primary" rounded @click="addItem()">
+                Add new entry
               </v-btn>
           </v-card>
         </v-row>
