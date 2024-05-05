@@ -6,7 +6,7 @@ from setuptools import setup
 
 setup(
     name="Blueos Proxy Extension",
-    version="1.0.3",
+    version="1.0.4",
     description="BlueOS Proxy Extension",
     license="MIT",
     install_requires=[
