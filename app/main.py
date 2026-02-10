@@ -49,6 +49,7 @@ class NginxManager:
           location / {{
             proxy_pass {server.url};
               proxy_http_version 1.1;
+              client_max_body_size 1G;
               proxy_set_header Upgrade $http_upgrade;
               proxy_set_header Connection "upgrade";
               proxy_set_header Cache-Control "no-store, no-cache, must-revalidate, max-age=0";
